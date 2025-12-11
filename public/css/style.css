@@ -1,0 +1,298 @@
+/* Reset default margins, padding, and box sizing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background: rgb(15, 15, 15);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: rgb(230, 230, 230);
+  line-height: 1.6;
+}
+
+/* Main container centers content and limits width */
+.page-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+/* Top navigation bar */
+.top-bar {
+  width: 100%;
+  background: rgb(20, 20, 20);
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid rgb(40, 40, 40);
+  text-align: center;
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.top-nav a {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  margin: 0 0.3rem;
+  background: rgb(35, 35, 35);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.top-nav a:hover {
+  background: rgb(229, 9, 20);
+}
+
+.top-nav .active {
+  background: rgb(229, 9, 20);
+}
+
+/* Card component for main content areas */
+.card {
+  background: rgb(25, 25, 25);
+  border: 1px solid rgb(45, 45, 45);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(255, 0, 0, 0.1);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.card-header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+  color: white;
+}
+
+.card-subtitle {
+  font-size: 0.95rem;
+  color: rgb(180, 180, 180);
+  margin-bottom: 1rem;
+}
+
+.card-text {
+  color: rgb(200, 200, 200);
+  margin-bottom: 1.2rem;
+}
+
+/* Form styling */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgb(60, 60, 60);
+  background: rgb(30, 30, 30);
+  color: white;
+  font-size: 1rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgb(229, 9, 20);
+  outline: none;
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.inline-form {
+  display: inline-block;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.65rem 1.3rem;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.25s;
+  border: none;
+  text-align: center;
+}
+
+.primary {
+  background: rgb(229, 9, 20);
+  color: white;
+}
+
+.primary:hover {
+  background: rgb(255, 40, 50);
+}
+
+.secondary {
+  background: rgb(50, 50, 50);
+  color: white;
+}
+
+.secondary:hover {
+  background: rgb(80, 80, 80);
+}
+
+.success {
+  background: rgb(255, 0, 0);
+}
+
+.success:hover {
+  background: rgb(0);
+}
+
+.danger {
+  background: rgb(170, 34, 34);
+}
+
+.danger:hover {
+  background: rgb(200, 40, 40);
+}
+
+.btn.small {
+  padding: 0.4rem 0.9rem;
+}
+
+/* Tables for slots and appointments */
+.table-wrapper {
+  overflow-x: auto;
+  margin-top: 1.2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgb(30, 30, 30);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgb(50, 50, 50);
+}
+
+th {
+  background: rgb(40, 40, 40);
+  text-align: left;
+  color: white;
+}
+
+tr:hover {
+  background: rgb(45, 45, 45);
+}
+
+/* Appointment status colours */
+.status-pending {
+  color: rgb(255, 200, 0);
+  font-weight: bold;
+}
+.status-approved {
+  color: rgb(0, 200, 80);
+  font-weight: bold;
+}
+.status-rejected {
+  color: rgb(255, 60, 60);
+  font-weight: bold;
+}
+
+/* Messages */
+.message {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.message.error {
+  color: rgb(255, 80, 80);
+}
+
+.message.success {
+  color: rgb(0, 0, 0);
+}
+
+/* Info lists */
+.info-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.info-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgb(50, 50, 50);
+}
+
+/* Utility classes */
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.card-footer-actions {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.muted-text {
+  color: rgb(140, 140, 140);
+}
+
+/* Pagination controls */
+.pagination {
+  margin: 2em 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.6em;
+}
+
+.pagination a {
+  padding: 0.45em 0.9em;
+  border-radius: 6px;
+  background-color: #222;
+  color: #ddd;
+  text-decoration: none;
+  font-weight: 500;
+  border: 1px solid #333;
+  transition: 0.2s ease;
+}
+
+.pagination a:hover {
+  background-color: #e50914;
+  color: #fff;
+  border-color: #e50914;
+}
+
+.pagination a.active-page {
+  background-color: #e50914;
+  color: #fff;
+  border-color: #e50914;
+  font-weight: bold;
+}

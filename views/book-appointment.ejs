@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+
+    <!-- Top navigation bar for patient -->
+    <header class="top-bar">
+      <div class="brand">Clinic Booking</div>
+      <nav class="top-nav">
+        <a href="/patient">Dashboard</a>
+        <a href="/book-appointment" class="active">Book Appointment</a>
+        <a href="/my-appointments">My Appointments</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="page-container">
+      <section class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle">
+            Please fill in the details below and choose one of the available slots.
+          </p>
+        </header>
+
+        <!-- Appointment booking form -->
+        <div class="card-content">
+          <form action="/book-appointment" method="POST" class="form">
+
+            <!-- Reason for visit -->
+            <div class="form-group">
+              <label for="reason">Reason for visit</label>
+              <textarea id="reason" name="reason" rows="4" required></textarea>
+            </div>
+
+            <!-- Dropdown list of available slots -->
+            <div class="form-group">
+              <label for="slotId">Select available slot</label>
+              <select id="slotId" name="slotId" required>
+                <% if (slots.length === 0) { %>
+                  <option value="">No available slots</option>
+                <% } else { %>
+                  <% slots.forEach(function (slot) { %>
+                    <option value="<%= slot.id %>">
+                      <%= slot.date %> &nbsp; <%= slot.startTime %> - <%= slot.endTime %>
+                    </option>
+                  <% }); %>
+                <% } %>
+              </select>
+            </div>
+
+            <!-- Form actions -->
+            <div class="form-actions">
+              <button type="submit" class="btn primary">Submit appointment</button>
+              <a href="/patient" class="btn secondary">Back to dashboard</a>
+            </div>
+
+          </form>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>

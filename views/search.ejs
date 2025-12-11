@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+
+    <!-- Top navigation bar for admin -->
+    <header class="top-bar">
+      <div class="brand">Clinic Admin</div>
+      <nav class="top-nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/create-slots">Create Slots</a>
+        <a href="/admin/slots">View Slots</a>
+        <a href="/manage-appointments">Appointments</a>
+        <a href="/search" class="active">Search</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="page-container">
+      <section class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle">
+            Search for appointments by full name or part of the name.
+          </p>
+        </header>
+
+        <div class="card-content">
+
+          <!-- Search form -->
+          <form action="/search" method="POST" class="form search-form">
+            <div class="form-group">
+              <label for="searchTerm">Patient name</label>
+              <input
+                type="text"
+                id="searchTerm"
+                name="searchTerm"
+                placeholder="Enter patient name"
+                required>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn primary">Search</button>
+            </div>
+          </form>
+
+          <!-- Conditional section: show search results if available -->
+          <% if (typeof results !== "undefined") { %>
+            <section class="results-section">
+              <h2 class="section-title">
+                Search results for "<%= searchedTerm %>"
+              </h2>
+
+              <% if (results.length === 0) { %>
+                <!-- Message when no matches found -->
+                <p class="card-text">No matching appointments found.</p>
+              <% } else { %>
+                <!-- Table of search results -->
+                <div class="table-wrapper">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Patient</th>
+                        <th>Session</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% results.forEach(function (item) { %>
+                        <tr>
+                          <td><%= item.fullName %></td>
+                          <td><%= item.slotLabel %></td>
+                          <td class="status status-<%= item.status %>"><%= item.status %></td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+              <% } %>
+            </section>
+          <% } %>
+
+          <!-- Section showing all appointments -->
+          <section class="results-section">
+            <h2 class="section-title">All appointments</h2>
+
+            <% if (appointments.length === 0) { %>
+              <!-- Message when no appointments exist -->
+              <p class="card-text">No appointments found.</p>
+            <% } else { %>
+              <!-- Table of all appointments -->
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Patient</th>
+                      <th>Session</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% appointments.forEach(function (item) { %>
+                      <tr>
+                        <td><%= item.fullName %></td>
+                        <td><%= item.slotLabel %></td>
+                        <td class="status status-<%= item.status %>"><%= item.status %></td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            <% } %>
+          </section>
+
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>

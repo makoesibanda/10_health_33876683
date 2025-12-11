@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+
+    <!-- Top navigation bar for admin -->
+    <header class="top-bar">
+      <div class="brand">Clinic Admin</div>
+      <nav class="top-nav">
+        <a href="/admin" class="active">Dashboard</a>
+        <a href="/admin/create-slots">Create Slots</a>
+        <a href="/admin/slots">View Slots</a>
+        <a href="/manage-appointments">Appointments</a>
+        <a href="/search">Search</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="page-container">
+      <section class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle"><%= description %></p>
+        </header>
+
+        <!-- Dashboard instructions -->
+        <div class="card-content">
+          <p class="card-text">
+            Use the menu above to create appointment slots, see the current
+            schedule, manage booking requests and search for specific patients.
+          </p>
+
+          <!-- Quick guide list -->
+          <ul class="info-list">
+            <li><strong>Create Slots:</strong> Add new time slots for future days.</li>
+            <li><strong>View Slots:</strong> See all slots and check which ones are taken.</li>
+            <li><strong>Appointments:</strong> Review requests and approve or reject them.</li>
+            <li><strong>Search:</strong> Look up appointments by patient name.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>
