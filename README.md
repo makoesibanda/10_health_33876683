@@ -117,7 +117,5 @@ During deployment to the Goldsmiths virtual server, redirects such as `/admin` a
 
 This was resolved by introducing a configurable base path using the `HEALTH_BASE_PATH` environment variable.
 By updating this variable in the `.env` file, the same codebase works correctly both locally and on the hosted server.
-
-```
-
+ 
 ---
