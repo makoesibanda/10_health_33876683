@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 module.exports = function () {
     const router = express.Router();
 
+    // Base path for redirects (local = localhost, VM = /usr/350)
+    const basePath = process.env.HEALTH_BASE_PATH || "";
+
     // Show login page
     router.get("/login", function (req, res) {
         res.render("login", {
@@ -15,7 +18,6 @@ module.exports = function () {
 
     // Handle login form submission
     router.post("/login", function (req, res) {
-        // Note: email field can be either patient email or admin username
         let email = req.body.email;
         let password = req.body.password;
 
@@ -51,18 +53,18 @@ module.exports = function () {
                 });
             }
 
-            // Save user details in session
+            // Store user in session
             req.session.user = {
                 id: user.id,
                 fullName: user.full_name,
                 role: user.role
             };
 
-            // Redirect based on role
+            // Redirect correctly using basePath
             if (user.role === "admin") {
-                res.redirect("/admin");
+                return res.redirect(basePath + "/admin");
             } else {
-                res.redirect("/patient");
+                return res.redirect(basePath + "/patient");
             }
         });
     });
@@ -100,7 +102,7 @@ module.exports = function () {
             });
         }
 
-        // Prevent using reserved admin email
+        // Prevent reserved admin email
         if (email.toLowerCase() === "admin@clinic.com") {
             return res.render("register", {
                 pageTitle: "Register",
@@ -128,10 +130,10 @@ module.exports = function () {
                 });
             }
 
-            // Hash the password before storing
+            // Hash password
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Insert new patient record
+            // Insert new patient into DB
             db.query(
                 "INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, 'patient')",
                 [fullName, email, hashedPassword],
@@ -145,23 +147,23 @@ module.exports = function () {
                         });
                     }
 
-                    // Auto-login newly registered patient
+                    // Auto-login after registration
                     req.session.user = {
                         id: result.insertId,
                         fullName: fullName,
                         role: "patient"
                     };
 
-                    res.redirect("/patient");
+                    return res.redirect(basePath + "/patient");
                 }
             );
         });
     });
 
-    // Logout route: clears session and returns to login page
+    // Logout route
     router.get("/logout", function (req, res) {
         req.session.destroy(function () {
-            res.redirect("/login");
+            return res.redirect(basePath + "/login");
         });
     });
 
