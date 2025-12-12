@@ -1,0 +1,14 @@
+home=https://www.doc.gold.ac.uk/usr/350/
+about=https://www.doc.gold.ac.uk/usr/350/about
+login=https://www.doc.gold.ac.uk/usr/350/login
+register=https://www.doc.gold.ac.uk/usr/350/register
+
+patient_dashboard=https://www.doc.gold.ac.uk/usr/350/patient
+book_appointment=https://www.doc.gold.ac.uk/usr/350/book-appointment
+my_appointments=https://www.doc.gold.ac.uk/usr/350/my-appointments
+
+admin_dashboard=https://www.doc.gold.ac.uk/usr/350/admin
+create_slots=https://www.doc.gold.ac.uk/usr/350/admin/create-slots
+manage_slots=https://www.doc.gold.ac.uk/usr/350/admin/slots
+manage_appointments=https://www.doc.gold.ac.uk/usr/350/manage-appointments
+search_appointments=https://www.doc.gold.ac.uk/usr/350/search

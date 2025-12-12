@@ -6,7 +6,7 @@ module.exports = function () {
 
     function ensurePatient(req, res, next) {
         if (!req.session.user || req.session.user.role !== "patient") {
-            return res.status(403).send("You are not allowed to view this page.");
+            return res.redirect("/login");
         }
         next();
     }

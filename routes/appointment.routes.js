@@ -7,7 +7,7 @@ module.exports = function () {
     // Check admin role
     function ensureAdmin(req, res, next) {
         if (!req.session.user || req.session.user.role !== "admin") {
-            return res.status(403).send("You are not allowed to view this page.");
+            return res.redirect("/login");
         }
         next();
     }
