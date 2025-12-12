@@ -6,7 +6,7 @@ module.exports = function () {
 
     function ensurePatient(req, res, next) {
         if (!req.session.user || req.session.user.role !== "patient") {
-            return res.redirect("/login");
+            return res.redirect(basePath + "/login");
         }
         next();
     }

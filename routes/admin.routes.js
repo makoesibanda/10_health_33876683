@@ -7,7 +7,7 @@ module.exports = function () {
     // Only admin users should access these pages
     function ensureAdmin(req, res, next) {
         if (!req.session.user || req.session.user.role !== "admin") {
-            return res.redirect("/login");
+            return res.redirect(basePath + "/login");
         }
         next();
     }
