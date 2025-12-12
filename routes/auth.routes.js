@@ -15,11 +15,10 @@ module.exports = function () {
 
     // Handle login form submission
     router.post("/login", function (req, res) {
-        // Note: email field can be either patient email or admin username
+
         let email = req.body.email;
         let password = req.body.password;
 
-        // Look up user by email/username
         db.query("SELECT * FROM users WHERE email = ?", [email], async function (err, rows) {
             if (err) {
                 console.log(err);
@@ -39,8 +38,6 @@ module.exports = function () {
             }
 
             const user = rows[0];
-
-            // Compare entered password with stored hash
             const match = await bcrypt.compare(password, user.password);
 
             if (!match) {
@@ -51,23 +48,21 @@ module.exports = function () {
                 });
             }
 
-            // Save user details in session
             req.session.user = {
                 id: user.id,
                 fullName: user.full_name,
                 role: user.role
             };
 
-            // Redirect based on role
             if (user.role === "admin") {
-                res.redirect("/admin");
+                return res.redirect("admin");
             } else {
-                res.redirect("/patient");
+                return res.redirect("patient");
             }
         });
     });
 
-    // Show registration form
+    // Registration page
     router.get("/register", function (req, res) {
         res.render("register", {
             pageTitle: "Register",
@@ -76,14 +71,13 @@ module.exports = function () {
         });
     });
 
-    // Handle registration form submission
+    // Handle registration form
     router.post("/register", async function (req, res) {
         let fullName = req.sanitize(req.body.fullName);
         let email = req.sanitize(req.body.email);
         let password = req.body.password;
         let confirmPassword = req.body.confirmPassword;
 
-        // Basic validation
         if (!fullName || !email || !password || !confirmPassword) {
             return res.render("register", {
                 pageTitle: "Register",
@@ -100,7 +94,6 @@ module.exports = function () {
             });
         }
 
-        // Prevent using reserved admin email
         if (email.toLowerCase() === "admin@clinic.com") {
             return res.render("register", {
                 pageTitle: "Register",
@@ -109,7 +102,6 @@ module.exports = function () {
             });
         }
 
-        // Check if email already exists
         db.query("SELECT * FROM users WHERE email = ?", [email], async function (err, rows) {
             if (err) {
                 console.log(err);
@@ -128,10 +120,8 @@ module.exports = function () {
                 });
             }
 
-            // Hash the password before storing
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Insert new patient record
             db.query(
                 "INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, 'patient')",
                 [fullName, email, hashedPassword],
@@ -145,23 +135,22 @@ module.exports = function () {
                         });
                     }
 
-                    // Auto-login newly registered patient
                     req.session.user = {
                         id: result.insertId,
                         fullName: fullName,
                         role: "patient"
                     };
 
-                    res.redirect("/patient");
+                    return res.redirect("patient");
                 }
             );
         });
     });
 
-    // Logout route: clears session and returns to login page
+    // Logout
     router.get("/logout", function (req, res) {
         req.session.destroy(function () {
-            res.redirect("/login");
+            res.redirect("login");
         });
     });
 
