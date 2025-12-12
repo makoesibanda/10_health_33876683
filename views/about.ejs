@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+
+  <body>
+    <div class="page-container">
+
+      <!-- Top navigation bar -->
+      <div class="top-bar">
+        <div class="brand">Clinic Booking</div>
+        <nav class="top-nav">
+          <a href="/">Home</a>
+          <a href="/about" class="active">About</a>
+          <a href="/login">Login</a>
+          <a href="/register">Register</a>
+        </nav>
+      </div>
+
+      <!-- Main content card -->
+      <div class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle"><%= description %></p>
+        </header>
+
+        <!-- About text -->
+        <p class="card-text">
+          Our system was built to make booking clinic appointments faster, easier,
+          and more organised for both patients and staff.
+        </p>
+
+        <p class="card-text">
+          Patients can book their preferred time slot online, and clinic admin
+          can approve or manage all appointments in one place.
+        </p>
+
+        <!-- Call-to-action button -->
+        <div class="card-footer-actions">
+          <a href="/login" class="btn primary">Get Started</a>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>

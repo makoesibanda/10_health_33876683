@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+
+    <!-- Top navigation bar for admin -->
+    <header class="top-bar">
+      <div class="brand">Clinic Admin</div>
+      <nav class="top-nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/create-slots">Create Slots</a>
+        <a href="/admin/slots" class="active">View Slots</a>
+        <a href="/manage-appointments">Appointments</a>
+        <a href="/search">Search</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="page-container">
+      <section class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle">
+            Below is the full list of slots that have been created.
+          </p>
+        </header>
+
+        <!-- Slot list table -->
+        <div class="card-content">
+          <% if (slots.length === 0) { %>
+            <!-- Message when no slots exist -->
+            <p class="card-text">No slots have been created yet.</p>
+          <% } else { %>
+
+            <!-- Table of slots -->
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% slots.forEach(function (slot) { %>
+                    <tr>
+                      <td><%= slot.id %></td>
+                      <td><%= slot.slot_date %></td>
+                      <td><%= slot.start_time %> - <%= slot.end_time %></td>
+                      <td class="status status-<%= slot.status %>"><%= slot.status %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+
+          <!-- Pagination controls -->
+          <div class="pagination">
+            <% if (currentPage > 1) { %>
+              <a href="/admin/slots?page=<%= currentPage - 1 %>">Previous</a>
+            <% } %>
+
+            <% for (let i = 1; i <= totalPages; i++) { %>
+              <a 
+                href="/admin/slots?page=<%= i %>"
+                class="<%= currentPage === i ? 'active-page' : '' %>"
+              >
+                <%= i %>
+              </a>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+              <a href="/admin/slots?page=<%= currentPage + 1 %>">Next</a>
+            <% } %>
+          </div>
+
+          <!-- Footer actions -->
+          <div class="card-footer-actions">
+            <a href="/admin/create-slots" class="btn primary">Create more slots</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>

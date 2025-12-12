@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+
+    <!-- Top navigation bar for admin -->
+    <header class="top-bar">
+      <div class="brand">Clinic Admin</div>
+      <nav class="top-nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/create-slots">Create Slots</a>
+        <a href="/admin/slots">View Slots</a>
+        <a href="/manage-appointments" class="active">Appointments</a>
+        <a href="/search">Search</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="page-container">
+      <section class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle"><%= description %></p>
+        </header>
+
+        <div class="card-content">
+          <% if (appointments.length === 0) { %>
+            <!-- Message when there are no appointments -->
+            <p class="card-text">There are no appointments to manage yet.</p>
+          <% } else { %>
+
+            <!-- Table of appointments -->
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Session</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% appointments.forEach(function (item) { %>
+                    <tr>
+                      <td><%= item.id %></td>
+                      <td><%= item.fullName %></td>
+                      <td><%= item.slotLabel %></td>
+                      <td><%= item.reason %></td>
+                      <td class="status status-<%= item.status %>"><%= item.status %></td>
+                      <td>
+                        <% if (item.status === "pending") { %>
+                          <!-- Approve and reject buttons for pending appointments -->
+                          <form action="/approve-appointment/<%= item.id %>" method="POST" class="inline-form">
+                            <button type="submit" class="btn small success">Approve</button>
+                          </form>
+                          <form action="/reject-appointment/<%= item.id %>" method="POST" class="inline-form">
+                            <button type="submit" class="btn small danger">Reject</button>
+                          </form>
+                        <% } else { %>
+                          <!-- No action available for approved/rejected appointments -->
+                          <span class="muted-text">No action</span>
+                        <% } %>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination controls -->
+            <% if (totalPages > 1) { %>
+              <div class="pagination">
+
+                <% if (currentPage > 1) { %>
+                  <a href="?page=<%= currentPage - 1 %>">Previous</a>
+                <% } %>
+
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                  <a href="?page=<%= i %>" class="<%= currentPage === i ? 'active-page' : '' %>">
+                    <%= i %>
+                  </a>
+                <% } %>
+
+                <% if (currentPage < totalPages) { %>
+                  <a href="?page=<%= currentPage + 1 %>">Next</a>
+                <% } %>
+
+              </div>
+            <% } %>
+
+          <% } %>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>

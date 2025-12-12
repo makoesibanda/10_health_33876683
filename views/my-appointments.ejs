@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+
+    <!-- Top navigation bar for patient -->
+    <header class="top-bar">
+      <div class="brand">Clinic Booking</div>
+      <nav class="top-nav">
+        <a href="/patient">Dashboard</a>
+        <a href="/book-appointment">Book Appointment</a>
+        <a href="/my-appointments" class="active">My Appointments</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="page-container">
+      <section class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle">
+            Below are all the appointments linked to your account.
+          </p>
+        </header>
+
+        <div class="card-content">
+          <% if (appointments.length === 0) { %>
+            <!-- Message when patient has no appointments -->
+            <p class="card-text">You do not have any appointments yet.</p>
+          <% } else { %>
+
+            <!-- Table of patient appointments -->
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Session</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% appointments.forEach(function (item) { %>
+                    <tr>
+                      <td><%= item.slotLabel %></td>
+                      <td><%= item.reason %></td>
+                      <td class="status status-<%= item.status %>"><%= item.status %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination controls -->
+            <div class="pagination">
+              <% if (currentPage > 1) { %>
+                <a href="/my-appointments?page=<%= currentPage - 1 %>">Previous</a>
+              <% } %>
+
+              <% for (let i = 1; i <= totalPages; i++) { %>
+                <% if (i === currentPage) { %>
+                  <span class="current-page"><%= i %></span>
+                <% } else { %>
+                  <a href="/my-appointments?page=<%= i %>"><%= i %></a>
+                <% } %>
+              <% } %>
+
+              <% if (currentPage < totalPages) { %>
+                <a href="/my-appointments?page=<%= currentPage + 1 %>">Next</a>
+              <% } %>
+            </div>
+          <% } %>
+
+          <!-- Footer actions -->
+          <div class="card-footer-actions">
+            <a href="/book-appointment" class="btn primary">Book another appointment</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>

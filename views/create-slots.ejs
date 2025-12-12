@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+
+    <!-- Top navigation bar for admin -->
+    <header class="top-bar">
+      <div class="brand">Clinic Admin</div>
+      <nav class="top-nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/create-slots" class="active">Create Slots</a>
+        <a href="/admin/slots">View Slots</a>
+        <a href="/manage-appointments">Appointments</a>
+        <a href="/search">Search</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="page-container">
+      <section class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle"><%= description %></p>
+        </header>
+
+        <!-- Slot creation form -->
+        <div class="card-content">
+          <% if (error) { %>
+            <p class="message error"><%= error %></p>
+          <% } %>
+
+          <% if (message) { %>
+            <p class="message success"><%= message %></p>
+          <% } %>
+
+          <form action="/admin/create-slots" method="POST" class="form">
+
+            <!-- Date range -->
+            <div class="form-group">
+              <label for="startDate">Start date</label>
+              <input type="date" id="startDate" name="startDate" required>
+            </div>
+
+            <div class="form-group">
+              <label for="endDate">End date</label>
+              <input type="date" id="endDate" name="endDate" required>
+            </div>
+
+            <!-- Time range -->
+            <div class="form-group">
+              <label for="startTime">Start time</label>
+              <input type="time" id="startTime" name="startTime" required>
+            </div>
+
+            <div class="form-group">
+              <label for="endTime">End time</label>
+              <input type="time" id="endTime" name="endTime" required>
+            </div>
+
+            <!-- Repeat pattern -->
+            <div class="form-group">
+              <label for="repeatPattern">Repeat pattern</label>
+              <select id="repeatPattern" name="repeatPattern" required>
+                <option value="everyday">Every day</option>
+                <option value="weekdays">Weekdays only</option>
+              </select>
+            </div>
+
+            <!-- Form actions -->
+            <div class="form-actions">
+              <button type="submit" class="btn primary">Create slots</button>
+              <a href="/admin/slots" class="btn secondary">View slots</a>
+            </div>
+
+          </form>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>

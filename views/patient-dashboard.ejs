@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+
+    <!-- Top navigation bar for patient -->
+    <header class="top-bar">
+      <div class="brand">Clinic Booking</div>
+      <nav class="top-nav">
+        <a href="/patient" class="active">Dashboard</a>
+        <a href="/book-appointment">Book Appointment</a>
+        <a href="/my-appointments">My Appointments</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+
+    <!-- Main content area -->
+    <main class="page-container">
+      <section class="card">
+
+        <!-- Page header -->
+        <header class="card-header">
+          <h1><%= pageTitle %></h1>
+          <p class="card-subtitle"><%= description %></p>
+        </header>
+
+        <!-- Dashboard content -->
+        <div class="card-content">
+          <p class="card-text">
+            From here you can book a new appointment or review your existing bookings.
+          </p>
+
+          <!-- Quick action buttons -->
+          <div class="button-row">
+            <a href="/book-appointment" class="btn primary">Book a new appointment</a>
+            <a href="/my-appointments" class="btn secondary">View my appointments</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>
