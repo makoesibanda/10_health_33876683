@@ -3,8 +3,6 @@ const bcrypt = require("bcrypt");
 
 module.exports = function () {
     const router = express.Router();
-
-    // Base path for redirects (local = localhost, VM = /usr/350)
     const basePath = process.env.HEALTH_BASE_PATH || "";
 
     // Show login page
@@ -18,20 +16,21 @@ module.exports = function () {
 
     // Handle login form submission
     router.post("/login", function (req, res) {
-        let email = req.body.email;
+        let email = req.body.email;       // email OR admin username
         let password = req.body.password;
 
-        // Look up user by email/username
+        // Look up account by email/username
         db.query("SELECT * FROM users WHERE email = ?", [email], async function (err, rows) {
             if (err) {
                 console.log(err);
                 return res.render("login", {
                     pageTitle: "Login",
                     message: null,
-                    error: "Something went wrong. Please try again."
+                    error: "Something went wrong. Try again."
                 });
             }
 
+            // No matching user
             if (rows.length === 0) {
                 return res.render("login", {
                     pageTitle: "Login",
@@ -41,8 +40,6 @@ module.exports = function () {
             }
 
             const user = rows[0];
-
-            // Compare entered password with stored hash
             const match = await bcrypt.compare(password, user.password);
 
             if (!match) {
@@ -53,14 +50,14 @@ module.exports = function () {
                 });
             }
 
-            // Store user in session
+            // Save essential user details in session
             req.session.user = {
                 id: user.id,
                 fullName: user.full_name,
                 role: user.role
             };
 
-            // Redirect correctly using basePath
+            // Redirect to correct dashboard
             if (user.role === "admin") {
                 return res.redirect(basePath + "/admin");
             } else {
@@ -69,7 +66,7 @@ module.exports = function () {
         });
     });
 
-    // Show registration form
+    // Registration page
     router.get("/register", function (req, res) {
         res.render("register", {
             pageTitle: "Register",
@@ -78,14 +75,14 @@ module.exports = function () {
         });
     });
 
-    // Handle registration form submission
+    // Handle new user registration
     router.post("/register", async function (req, res) {
         let fullName = req.sanitize(req.body.fullName);
         let email = req.sanitize(req.body.email);
         let password = req.body.password;
         let confirmPassword = req.body.confirmPassword;
 
-        // Basic validation
+        // Basic field checks
         if (!fullName || !email || !password || !confirmPassword) {
             return res.render("register", {
                 pageTitle: "Register",
@@ -102,7 +99,7 @@ module.exports = function () {
             });
         }
 
-        // Prevent reserved admin email
+        // Prevent admin reserved email
         if (email.toLowerCase() === "admin@clinic.com") {
             return res.render("register", {
                 pageTitle: "Register",
@@ -118,7 +115,7 @@ module.exports = function () {
                 return res.render("register", {
                     pageTitle: "Register",
                     message: null,
-                    error: "Something went wrong. Please try again."
+                    error: "Something went wrong."
                 });
             }
 
@@ -130,10 +127,10 @@ module.exports = function () {
                 });
             }
 
-            // Hash password
+            // Encrypt password
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Insert new patient into DB
+            // Insert patient record
             db.query(
                 "INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, 'patient')",
                 [fullName, email, hashedPassword],
@@ -143,11 +140,11 @@ module.exports = function () {
                         return res.render("register", {
                             pageTitle: "Register",
                             message: null,
-                            error: "Could not create account."
+                            error: "Could not create your account."
                         });
                     }
 
-                    // Auto-login after registration
+                    // Auto-login the new patient
                     req.session.user = {
                         id: result.insertId,
                         fullName: fullName,
@@ -160,7 +157,7 @@ module.exports = function () {
         });
     });
 
-    // Logout route
+    // Logout → clear session
     router.get("/logout", function (req, res) {
         req.session.destroy(function () {
             return res.redirect(basePath + "/login");

@@ -2,8 +2,9 @@ const express = require("express");
 
 module.exports = function () {
     const router = express.Router();
+    const basePath = process.env.HEALTH_BASE_PATH || "";
 
-    // Middleware: only allow access if the user is logged in as admin
+    // Only admin users should access these pages
     function ensureAdmin(req, res, next) {
         if (!req.session.user || req.session.user.role !== "admin") {
             return res.status(403).send("You are not allowed to view this page.");
@@ -11,7 +12,7 @@ module.exports = function () {
         next();
     }
 
-    // Admin dashboard page
+    // Admin dashboard
     router.get("/admin", ensureAdmin, function (req, res) {
         res.render("admin-dashboard", {
             pageTitle: "Admin Dashboard",
@@ -19,13 +20,12 @@ module.exports = function () {
         });
     });
 
-    // Show all slots with pagination
+    // View slots with pagination
     router.get("/admin/slots", ensureAdmin, function (req, res) {
         let page = parseInt(req.query.page) || 1;
-        let limit = 3;  // limit per page (set small here for easy testing)
+        let limit = 3; // small for testing
         let offset = (page - 1) * limit;
 
-        // First count total slots to calculate total pages
         db.query("SELECT COUNT(*) AS total FROM slots", function (err, countRows) {
             if (err) {
                 console.log(err);
@@ -35,7 +35,6 @@ module.exports = function () {
             let total = countRows[0].total;
             let totalPages = Math.ceil(total / limit);
 
-            // Then fetch the current page of slots
             db.query(
                 "SELECT * FROM slots ORDER BY slot_date, start_time LIMIT ? OFFSET ?",
                 [limit, offset],
@@ -57,17 +56,17 @@ module.exports = function () {
         });
     });
 
-    // Show the form to create new slots
+    // Create-slot page
     router.get("/admin/create-slots", ensureAdmin, function (req, res) {
         res.render("create-slots", {
             pageTitle: "Create Slots",
-            description: "Create new time slots for appointments.",
+            description: "Create new appointment slots",
             message: null,
             error: null
         });
     });
 
-    // Handle slot creation across a date range
+    // Handle slot creation in a date range
     router.post("/admin/create-slots", ensureAdmin, function (req, res) {
         let startDate = req.sanitize(req.body.startDate);
         let endDate = req.sanitize(req.body.endDate);
@@ -75,11 +74,11 @@ module.exports = function () {
         let endTime = req.body.endTime;
         let repeatPattern = req.body.repeatPattern;
 
-        // Basic validation
+        // Required fields
         if (!startDate || !endDate || !startTime || !endTime) {
             return res.render("create-slots", {
                 pageTitle: "Create Slots",
-                description: "Create new time slots for appointments.",
+                description: "Create new appointment slots",
                 error: "Please fill in all fields.",
                 message: null
             });
@@ -88,7 +87,7 @@ module.exports = function () {
         if (endDate < startDate) {
             return res.render("create-slots", {
                 pageTitle: "Create Slots",
-                description: "Create new time slots for appointments.",
+                description: "Create new appointment slots",
                 error: "End date cannot be before start date.",
                 message: null
             });
@@ -98,16 +97,16 @@ module.exports = function () {
         let current = new Date(startDate);
         let last = new Date(endDate);
 
-        // Recursive function to process each day in the range
+        // Loop one day at a time
         function processDay() {
             if (current > last) {
                 return finishUp();
             }
 
-            let day = current.getDay(); // 0 = Sunday, 6 = Saturday
+            let day = current.getDay();
             let dateString = current.toISOString().split("T")[0];
 
-            // Decide whether to include this day based on repeat pattern
+            // Decide which days to include
             let include =
                 repeatPattern === "everyday" ||
                 (repeatPattern === "weekdays" && day >= 1 && day <= 5);
@@ -117,7 +116,7 @@ module.exports = function () {
                 return processDay();
             }
 
-            // Check for existing slots on this date
+            // Check for overlapping slots
             db.query("SELECT * FROM slots WHERE slot_date = ?", [dateString], function (err, rows) {
                 if (err) {
                     console.log(err);
@@ -127,7 +126,6 @@ module.exports = function () {
 
                 let overlap = false;
 
-                // Check if new slot would overlap with existing ones
                 rows.forEach(function (slot) {
                     if (!(endTime <= slot.start_time || startTime >= slot.end_time)) {
                         overlap = true;
@@ -139,7 +137,7 @@ module.exports = function () {
                     return processDay();
                 }
 
-                // Insert new slot if safe
+                // Insert new slot
                 db.query(
                     "INSERT INTO slots (slot_date, start_time, end_time, status) VALUES (?, ?, ?, 'available')",
                     [dateString, startTime, endTime],
@@ -154,16 +152,16 @@ module.exports = function () {
             });
         }
 
-        // Final step after processing all days
+        // Final message
         function finishUp() {
             let msg =
                 createdCount === 0
-                    ? "No new slots were created. They may already exist or overlap."
+                    ? "No new slots were created."
                     : "Successfully created " + createdCount + " slot(s).";
 
             res.render("create-slots", {
                 pageTitle: "Create Slots",
-                description: "Create new time slots for appointments.",
+                description: "Create new appointment slots",
                 message: msg,
                 error: null
             });
@@ -174,4 +172,3 @@ module.exports = function () {
 
     return router;
 };
-//

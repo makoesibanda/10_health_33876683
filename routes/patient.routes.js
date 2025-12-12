@@ -2,8 +2,8 @@ const express = require("express");
 
 module.exports = function () {
     const router = express.Router();
+    const basePath = process.env.HEALTH_BASE_PATH || "";
 
-    // Middleware: only allow access if the user is logged in as a patient
     function ensurePatient(req, res, next) {
         if (!req.session.user || req.session.user.role !== "patient") {
             return res.status(403).send("You are not allowed to view this page.");
@@ -11,7 +11,6 @@ module.exports = function () {
         next();
     }
 
-    // Patient dashboard page
     router.get("/patient", ensurePatient, function (req, res) {
         res.render("patient-dashboard", {
             pageTitle: "Patient Dashboard",
@@ -19,7 +18,7 @@ module.exports = function () {
         });
     });
 
-    // Show all available slots for booking
+    // View available slots
     router.get("/book-appointment", ensurePatient, function (req, res) {
         db.query(
             "SELECT * FROM slots WHERE status = 'available' ORDER BY slot_date, start_time",
@@ -29,7 +28,6 @@ module.exports = function () {
                     return res.send("Error loading slots.");
                 }
 
-                // Format slot data for EJS template
                 let formatted = rows.map(function (slot) {
                     return {
                         id: slot.id,
@@ -47,27 +45,20 @@ module.exports = function () {
         );
     });
 
-    // Handle booking a slot
+    // Book slot
     router.post("/book-appointment", ensurePatient, function (req, res) {
         let user = req.session.user;
         let slotId = req.body.slotId;
         let reason = req.sanitize(req.body.reason);
 
-        // Check if the slot still exists and is available
         db.query(
             "SELECT * FROM slots WHERE id = ? AND status = 'available'",
             [slotId],
             function (err, slotRows) {
-                if (err) {
-                    console.log(err);
-                    return res.send("Error checking slot.");
+                if (err || slotRows.length === 0) {
+                    return res.send("Sorry, this slot is not available.");
                 }
 
-                if (slotRows.length === 0) {
-                    return res.send("Sorry, this slot is no longer available.");
-                }
-
-                // Insert appointment record
                 db.query(
                     "INSERT INTO appointments (user_id, slot_id, reason, status) VALUES (?, ?, ?, 'pending')",
                     [user.id, slotId, reason],
@@ -77,25 +68,23 @@ module.exports = function () {
                             return res.send("Could not book appointment.");
                         }
 
-                        // Mark the slot as taken so it cannot be booked again
                         db.query("UPDATE slots SET status = 'taken' WHERE id = ?", [slotId]);
 
-                        res.redirect("/my-appointments");
+                        return res.redirect(basePath + "/my-appointments");
                     }
                 );
             }
         );
     });
 
-    // View all appointments for this patient with pagination
+    // View appointments
     router.get("/my-appointments", ensurePatient, function (req, res) {
         let user = req.session.user;
 
         let page = parseInt(req.query.page) || 1;
-        let limit = 2; // small limit here for testing/demo purposes
+        let limit = 2;
         let offset = (page - 1) * limit;
 
-        // Count total appointments for this patient
         db.query(
             "SELECT COUNT(*) AS total FROM appointments WHERE user_id = ?",
             [user.id],
@@ -108,7 +97,6 @@ module.exports = function () {
                 let total = countRows[0].total;
                 let totalPages = Math.ceil(total / limit);
 
-                // Query appointments with slot details
                 const sql = `
                     SELECT 
                         a.id,
